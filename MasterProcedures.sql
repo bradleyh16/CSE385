@@ -9,7 +9,7 @@ AS
 		BEGIN
 			SELECT [errorMessage] = 'Sorry we could not find your email address'
 		END 
-	ELSE IF EXISTS(SELECT NULL FROM Users WHERE (email = @email) AND [password] = PWDENCRYPT(@password) AND isDeleted = 0)
+	ELSE IF EXISTS(SELECT NULL FROM Users WHERE (email = @email) AND [password] = PWDENCRYPT(@password) AND deleted = 0)
 		BEGIN
 			SELECT [name], email, birthday, [height], [weight], [message] = 'User has successfully logged in' FROM Users WHERE email = @email
 		END 
@@ -73,19 +73,20 @@ AS
 
 GO
 CREATE PROCEDURE deleteUser
-	@userID
+	@userID		int
 AS
 	SET NOCOUNT ON
 
 	IF(@userID NOT IN (SELECT trainerID FROM PersonalTrainers))
 	BEGIN
 		UPDATE Users
-		SET isDeleted = 1
+		SET deleted = 1
 		WHERE userID = @userID
-		SELECT [successfulDelete] = "User was successfully deleted."
+		SELECT [successfulDelete] = 'User was successfully deleted.'
+	END 
+	ELSE BEGIN
+ 		SELECT [errorMessage] = 'User must be a trainer, so could not be deleted.'
 	END
-	ELSE
-		SELECT [errorMessage] = "User must be a trainer, so could not be deleted."
 GO
 CREATE PROCEDURE addWorkout
 	@userID int,
@@ -95,7 +96,7 @@ CREATE PROCEDURE addWorkout
 AS
 	SET NOCOUNT ON
 	
-	IF NOT EXISTS(SELECT NULL FROM Users WHERE @userID IN (SELECT userID FROM Users WHERE isDeleted = 0)) 
+	IF NOT EXISTS(SELECT NULL FROM Users WHERE @userID IN (SELECT userID FROM Users WHERE deleted = 0)) 
 		BEGIN 
 			SELECT [errorMessage] = 'This user does not exist'
 		END 
@@ -265,8 +266,10 @@ CREATE PROCEDURE getWorkoutsForUser
 AS
 	SET NOCOUNT ON
 
-	SELECT * FROM Workouts WHERE userID = @UserID
-
+	SELECT [description], [date]
+	FROM Workouts 
+	WHERE userID = @UserID 
+	ORDER BY [date] DESC
 
 GO
 CREATE PROCEDURE getWorkoutsForUserInRange
@@ -276,9 +279,10 @@ CREATE PROCEDURE getWorkoutsForUserInRange
 AS
 	SET NOCOUNT ON;
 
-	SELECT *
+	SELECT [description]
 	FROM Workouts
 	WHERE (@userID = userID) AND ([date] BETWEEN @start AND @endd)
+	ORDER BY [date] DESC
 
 
 GO
@@ -287,7 +291,7 @@ CREATE PROCEDURE getActivitiesForWorkout
 AS
 	SET NOCOUNT ON;
 
-	SELECT *
+	SELECT reps, [sets], [weight], rest, distance, [time]
 	FROM Activities
 	WHERE @workoutID = Activities.workoutID
 
@@ -298,7 +302,7 @@ CREATE PROCEDURE getTypeByID
 AS
 	SET NOCOUNT ON;
 
-	SELECT *
+	SELECT name, [description]
 	FROM [Types]
 	WHERE @typeID = [Types].typeID
 
@@ -308,7 +312,7 @@ CREATE PROCEDURE getAllTypes
 AS
 	SET NOCOUNT ON;
 
-	SELECT *
+	SELECT name, [description]
 	FROM Type
 
 
@@ -344,7 +348,7 @@ AS
 
 	SET NOCOUNT ON;
 
-	SELECT *
+	SELECT name, email, birthday, height, [weight], trainer
 	FROM Users
 	WHERE name+ '~' + email LIKE ('%' + @query + '%')
 
@@ -356,7 +360,7 @@ CREATE PROCEDURE getActivityByID
 	AS
 	SET NOCOUNT ON
 
-	SELECT *
+	SELECT reps, [sets], [weight], rest, distance, [time]
 	FROM Activities
 	WHERE activityID = @activityID
 
@@ -368,7 +372,7 @@ CREATE PROCEDURE getTemplateByID
 	AS
 	SET NOCOUNT ON
 
-	SELECT *
+	SELECT name, [description]
 	FROM Templates
 	WHERE templateID = @templateID
 
@@ -379,7 +383,7 @@ CREATE PROCEDURE getTemplatesByUser
 	AS
 	SET NOCOUNT ON
 
-	SELECT *
+	SELECT name, [description]
 	FROM Templates
 	WHERE creatorID = @creatorID
 
@@ -391,7 +395,7 @@ CREATE PROCEDURE getUserByID
 	AS
 	SET NOCOUNT ON
 
-	SELECT userID
+	SELECT name, email, birthday, height, [weight], trainer
 	FROM Users
 	WHERE userID = @userID
 
@@ -403,6 +407,7 @@ CREATE PROCEDURE getWorkoutByID
 AS
 	SET NOCOUNT ON
 
-	SELECT *
+	SELECT [description], [date]
 	FROM Workouts
 	WHERE workoutID = @workoutID
+	ORDER BY [date] DESC
