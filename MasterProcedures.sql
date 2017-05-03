@@ -369,7 +369,7 @@ AS
 
 	SET NOCOUNT ON;
 
-	SELECT *
+	SELECT userID, name, email, birthday, height, [weight], trainer, deleted
 	FROM Users
 	WHERE name+ '~' + email LIKE ('%' + @query + '%')
 
@@ -416,7 +416,7 @@ CREATE PROCEDURE getUserByID
 	AS
 	SET NOCOUNT ON
 
-	SELECT *
+	SELECT userID, name, email, birthday, height, [weight], trainer, deleted
 	FROM Users
 	WHERE userID = @userID
 
