@@ -287,7 +287,7 @@ CREATE PROCEDURE getWorkoutsForUser
 AS
 	SET NOCOUNT ON
 
-	SELECT [description], [date]
+	SELECT *
 	FROM Workouts 
 	WHERE userID = @UserID 
 	ORDER BY [date] DESC
@@ -300,7 +300,7 @@ CREATE PROCEDURE getWorkoutsForUserInRange
 AS
 	SET NOCOUNT ON;
 
-	SELECT [description]
+	SELECT *
 	FROM Workouts
 	WHERE (@userID = userID) AND ([date] BETWEEN @start AND @endd)
 	ORDER BY [date] DESC
@@ -312,7 +312,7 @@ CREATE PROCEDURE getActivitiesForWorkout
 AS
 	SET NOCOUNT ON;
 
-	SELECT reps, [sets], [weight], rest, distance, [time]
+	SELECT *
 	FROM Activities
 	WHERE @workoutID = Activities.workoutID
 
@@ -323,7 +323,7 @@ CREATE PROCEDURE getTypeByID
 AS
 	SET NOCOUNT ON;
 
-	SELECT name, [description]
+	SELECT *
 	FROM [Types]
 	WHERE @typeID = [Types].typeID
 
@@ -333,8 +333,8 @@ CREATE PROCEDURE getAllTypes
 AS
 	SET NOCOUNT ON;
 
-	SELECT name, [description]
-	FROM Type
+	SELECT *
+	FROM Types
 
 
 GO
@@ -343,7 +343,7 @@ CREATE PROCEDURE getTrainerForUser
 AS
 	SET NOCOUNT ON;
 	
-	SELECT TrainerID
+	SELECT *
 	FROM PersonalTrainers
 	WHERE @userID = PersonalTrainers.userID
 
@@ -356,7 +356,7 @@ AS
 	
 	IF 1 = (SELECT trainer FROM Users WHERE @userID = Users.userID)
 	BEGIN
-		SELECT userID
+		SELECT *
 		FROM PersonalTrainers
 		WHERE PersonalTrainers.trainerID = @userID
 	END
@@ -369,7 +369,7 @@ AS
 
 	SET NOCOUNT ON;
 
-	SELECT name, email, birthday, height, [weight], trainer
+	SELECT *
 	FROM Users
 	WHERE name+ '~' + email LIKE ('%' + @query + '%')
 
@@ -381,7 +381,7 @@ CREATE PROCEDURE getActivityByID
 	AS
 	SET NOCOUNT ON
 
-	SELECT reps, [sets], [weight], rest, distance, [time]
+	SELECT *
 	FROM Activities
 	WHERE activityID = @activityID
 
@@ -393,7 +393,7 @@ CREATE PROCEDURE getTemplateByID
 	AS
 	SET NOCOUNT ON
 
-	SELECT name, [description]
+	SELECT *
 	FROM Templates
 	WHERE templateID = @templateID
 
@@ -404,7 +404,7 @@ CREATE PROCEDURE getTemplatesByUser
 	AS
 	SET NOCOUNT ON
 
-	SELECT name, [description]
+	SELECT *
 	FROM Templates
 	WHERE creatorID = @creatorID
 
@@ -416,7 +416,7 @@ CREATE PROCEDURE getUserByID
 	AS
 	SET NOCOUNT ON
 
-	SELECT name, email, birthday, height, [weight], trainer
+	SELECT *
 	FROM Users
 	WHERE userID = @userID
 
@@ -428,7 +428,7 @@ CREATE PROCEDURE getWorkoutByID
 AS
 	SET NOCOUNT ON
 
-	SELECT [description], [date]
+	SELECT *
 	FROM Workouts
 	WHERE workoutID = @workoutID
 	ORDER BY [date] DESC
