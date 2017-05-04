@@ -333,7 +333,7 @@ AS
 	SET NOCOUNT ON;
 
 	SELECT *
-	FROM Types
+	FROM [Types]
 
 
 GO
@@ -463,9 +463,9 @@ AS
 	END
 	ELSE
 	BEGIN
-		INSERT INTO Types(name, [description])
+		INSERT INTO [Types](name, [description])
 		VALUES (@name, @description)   
-		SELECT [activityID] = @@IDENTITY, * FROM Types WHERE typeID = @@IDENTITY
+		SELECT [activityID] = @@IDENTITY, * FROM [Types] WHERE typeID = @@IDENTITY
 	END
 
 GO
@@ -481,10 +481,10 @@ AS
 	END
 	ELSE
 	BEGIN
-		UPDATE Types
+		UPDATE [Types]
 		SET name = @name, [description] = @description
 		WHERE typeID = @typeID
-		SELECt * FROM Types WHERE typeID = @typeID
+		SELECt * FROM [Types] WHERE typeID = @typeID
 	END
 GO
 CREATE PROCEDURE updateActivity       
