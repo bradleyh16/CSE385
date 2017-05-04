@@ -457,15 +457,12 @@ CREATE PROCEDURE addType
     @description VARCHAR (255)              
 AS
 	SET NOCOUNT ON
-	IF EXISTS(SELECT NULL FROM Types WHERE name = @name)
-	BEGIN
-		SELECT [error] = 'This type name already exists'
-	END
-	ELSE
+	IF NOT EXISTS(SELECT NULL FROM [Types] WHERE name = @name)
 	BEGIN
 		INSERT INTO [Types](name, [description])
-		VALUES (@name, @description)   
-		SELECT [activityID] = @@IDENTITY, * FROM [Types] WHERE typeID = @@IDENTITY
+		VALUES (@name, @description)  
+	END	ELSE BEGIN
+		 SELECT [error] = 'This type name already exists'
 	END
 
 GO
