@@ -431,7 +431,9 @@ AS
 	FROM Workouts
 	WHERE workoutID = @workoutID
 	ORDER BY [date] DESC
-	CREATE PROCEDURE addActivity       
+
+GO
+CREATE PROCEDURE addActivity       
 	@workoutID  INT,        
 	@templateID INT,        
 	@typeID     INT,        
