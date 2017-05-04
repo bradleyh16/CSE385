@@ -75,8 +75,7 @@ CREATE PROCEDURE updateUserPassword
 	@newPassword varchar(255)
 AS
 	SET NOCOUNT ON 
-	IF EXISTS(SELECT NULL FROM Users WHERE (userID = @userID) AND
-											   ([password] = PWDENCRYPT(@oldPassword)))
+	IF EXISTS(SELECT NULL FROM Users WHERE (userID = @userID) AND ([password] = PWDENCRYPT(@oldPassword)))
 	BEGIN
 		UPDATE Users
 		SET [password] = PWDENCRYPT(@newPassword)
@@ -121,7 +120,7 @@ AS
 			INSERT INTO Workouts(userID, templateID, [description], [date])
 			VALUES (@userID, @templateID, @description, @date) 
 
-			SELECT [workoutID] = @@IDENTITY, * FROM Workouts
+			SELECT [workoutID] = @@IDENTITY, * FROM Workouts WHERE workoutID = @@IDENTITY
 		END
 
 
@@ -231,7 +230,7 @@ AS
 		BEGIN
 			INSERT INTO Templates(creatorID, name, [description])
 			VALUES(@CreatorID, @Name, @Description)
-			SELECT [templateID] = @@IDENTITY, creatorID, [name], [description] FROM Templates 
+			SELECT [templateID] = @@IDENTITY, creatorID, [name], [description] FROM Templates WHERE templateID = @@IDENTITY
 		END
 
 
@@ -432,3 +431,76 @@ AS
 	FROM Workouts
 	WHERE workoutID = @workoutID
 	ORDER BY [date] DESC
+	CREATE PROCEDURE addActivity       
+	@workoutID  INT,        
+	@templateID INT,        
+	@typeID     INT,        
+	@reps       INT,        
+	@sets       INT,        
+	@weight     FLOAT (53), 
+	@rest       INT,        
+	@distance   FLOAT (53), 
+	@timer       INT        
+AS
+	SET NOCOUNT ON
+	BEGIN
+		INSERT INTO Activities(workoutID, templateID, typeID, reps, [sets], [weight], rest, distance, [time])
+		VALUES (@workoutID, @templateID ,@typeID ,@reps ,@sets ,@weight ,@rest ,@distance , @timer)   
+		SELECT [activityID] = @@IDENTITY, * FROM Activities WHERE activityID= @@IDENTITY
+	END
+
+GO
+CREATE PROCEDURE addType                  
+    @name    VARCHAR (255),
+    @description VARCHAR (255)              
+AS
+	SET NOCOUNT ON
+	IF EXISTS(SELECT NULL FROM Types WHERE name = @name)
+	BEGIN
+		SELECT [error] = 'This type name already exists'
+	END
+	ELSE
+	BEGIN
+		INSERT INTO Types(name, [description])
+		VALUES (@name, @description)   
+		SELECT [activityID] = @@IDENTITY, * FROM Types WHERE typeID = @@IDENTITY
+	END
+
+GO
+CREATE PROCEDURE updateType                  
+    @typeID INT,
+	@name    VARCHAR (255),
+    @description VARCHAR (255)              
+AS
+	SET NOCOUNT ON
+	IF EXISTS(SELECT NULL FROM Types WHERE name = @name)
+	BEGIN
+		SELECT [error] = 'This type name already exists'
+	END
+	ELSE
+	BEGIN
+		UPDATE Types
+		SET name = @name, [description] = @description
+		WHERE typeID = @typeID
+		SELECt * FROM Types WHERE typeID = @typeID
+	END
+GO
+CREATE PROCEDURE updateActivity       
+	@activityID INT,
+	@workoutID  INT,        
+	@templateID INT,        
+	@typeID     INT,        
+	@reps       INT,        
+	@sets       INT,        
+	@weight     FLOAT (53), 
+	@rest       INT,        
+	@distance   FLOAT (53), 
+	@timer      INT        
+AS
+	SET NOCOUNT ON
+	BEGIN
+		UPDATE Activities
+		SET workoutID = @workoutID, templateID = @templateID, typeID = @typeID, reps = @reps, [sets] = @sets, [weight] = @weight, rest = @rest, distance = @distance, [time] = @timer
+		WHERE activityID = @activityID
+		SELECT * FROM Activities WHERE activityID = @activityID 	
+	END
