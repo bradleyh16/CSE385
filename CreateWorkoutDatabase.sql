@@ -24,7 +24,7 @@ CREATE TABLE Users (
 
 
 CREATE TABLE PersonalTrainers (
-	trainerID int NOT NULL,
+	trainerID int PRIMARY KEY	IDENTITY(0,1),
 	userID    int REFERENCES Users (userID)
 );
 
