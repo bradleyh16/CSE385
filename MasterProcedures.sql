@@ -299,10 +299,17 @@ CREATE PROCEDURE getWorkoutsForUserInRange
 AS
 	SET NOCOUNT ON;
 
-	SELECT *
-	FROM Workouts
-	WHERE (@userID = userID) AND ([date] BETWEEN @start AND @endd)
-	ORDER BY [date] DESC
+	IF @start < @endd
+	BEGIN
+		SELECT *
+		FROM Workouts
+		WHERE (@userID = userID) AND ([date] BETWEEN @start AND @endd)
+		ORDER BY [date] DESC
+	END
+	ELSE
+	BEGIN
+		SELECT [errorMessage] = 'The dates are invalid.'
+	END
 
 
 GO
