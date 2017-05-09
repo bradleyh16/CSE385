@@ -11,7 +11,7 @@ AS
 		END 
 	ELSE IF EXISTS(SELECT NULL FROM Users WHERE (email = @email)  AND (Users.deleted = 0) AND (PWDCOMPARE(@password, Users.password) = 1))
 		BEGIN
-			SELECT [userID], name, email, birthday, [height], [weight], trainer, deleted, [message] = 'User has successfully logged in' FROM Users WHERE email = @email
+			SELECT [userID], name, email, birthday, [height], [weight], trainer, deleted FROM Users WHERE email = @email
 		END 
 	ELSE 
 		BEGIN
@@ -91,8 +91,7 @@ AS
 		UPDATE Users
 		SET deleted = 1
 		WHERE userID = @userID
-		SELECT [success] = 'User has been deleted
-		'
+		SELECT [success] = 'User has been deleted'
 	END 
 	ELSE BEGIN
  		SELECT [error] = 'User must be a trainer, so could not be deleted.'
@@ -165,7 +164,7 @@ AS
 			DELETE FROM Workouts
 			WHERE workoutID = @workoutID
 
-			SELECT [[success] = 'Workout has been successfully deleted'
+			SELECT [success] = 'Workout has been successfully deleted'
 		END
 
 GO
