@@ -11,13 +11,12 @@ AS
 		END 
 	ELSE IF EXISTS(SELECT NULL FROM Users WHERE (email = @email)  AND (Users.deleted = 0) AND (PWDCOMPARE(@password, Users.password) = 1))
 		BEGIN
-			SELECT [name], email, birthday, [height], [weight], [message] = 'User has successfully logged in' FROM Users WHERE email = @email
+			SELECT [userID], name, email, birthday, [height], [weight], trainer, deleted, [message] = 'User has successfully logged in' FROM Users WHERE email = @email
 		END 
 	ELSE 
 		BEGIN
 			SELECT [error] = 'Could not find your password or email address'
 		END
-
 GO
 CREATE PROCEDURE spRegisterUser
 	@name varchar(255),
@@ -34,7 +33,7 @@ AS
 		BEGIN
 			INSERT INTO Users([name], email, [password] )
 			VALUES (@name, @email, PWDENCRYPT(@password))
-			SELECT [userID] = @@IDENTITY, email, [name] FROM Users WHERE email = @email
+			SELECT [userID], name, email, birthday, [height], [weight], trainer, deleted FROM Users WHERE email = @email
 		END
 GO 
 CREATE PROCEDURE spUpdateUser
