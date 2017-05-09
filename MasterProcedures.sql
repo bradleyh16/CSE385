@@ -91,7 +91,8 @@ AS
 		UPDATE Users
 		SET deleted = 1
 		WHERE userID = @userID
-		SELECT userID, [name], email, birthday, [height], [weight], trainer FROM Users WHERE userID = @userID 
+		SELECT [success] = 'User has been deleted
+		'
 	END 
 	ELSE BEGIN
  		SELECT [error] = 'User must be a trainer, so could not be deleted.'
@@ -164,7 +165,7 @@ AS
 			DELETE FROM Workouts
 			WHERE workoutID = @workoutID
 
-			SELECT * FROM Workouts WHERE workoutID = @workoutID
+			SELECT [[success] = 'Workout has been successfully deleted'
 		END
 
 GO
@@ -197,7 +198,7 @@ AS
 			FROM PersonalTrainers
 			WHERE @TrainerID LIKE trainerID
 
-			SELECT trainerID, userID FROM PersonalTrainers WHERE userID = @userID
+			SELECT [success] = 'Personal Trainer has been successfully deleted'
 		END 
 	ELSE
 		BEGIN
@@ -257,7 +258,8 @@ AS
 		BEGIN
 			DELETE
 			FROM Templates
-			WHERE templateID = @TemplateID
+			WHERE templateID = @TemplateID 
+			SELECT [success] = 'Template has been successfully deleted'
 		END 
 	ELSE 
 		BEGIN
