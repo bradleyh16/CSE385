@@ -1,7 +1,7 @@
 ﻿GO
 CREATE PROCEDURE spLoginUser
-	@email varchar(255),
-	@password varchar(255)
+	@email			varchar(255),
+	@password		varchar(255)
 AS
 	SET NOCOUNT ON
 	
@@ -19,9 +19,9 @@ AS
 		END
 GO
 CREATE PROCEDURE spRegisterUser
-	@name varchar(255),
-	@email varchar(255),
-	@password varchar(255)
+	@name			varchar(255),
+	@email			varchar(255),
+	@password		varchar(255)
 AS 
 	SET NOCOUNT ON
 	
@@ -37,13 +37,13 @@ AS
 		END
 GO 
 CREATE PROCEDURE spUpdateUser
-	@userID int,
-	@email varchar(255),
-	@name varchar(255),
-	@birthday date,
-	@weight float,
-	@height float,
-	@trainer bit
+	@userID			int,
+	@email			varchar(255),
+	@name			varchar(255),
+	@birthday		date,
+	@weight			float,
+	@height			float,
+	@trainer		bit
 AS
 	SET NOCOUNT ON
 
@@ -65,20 +65,23 @@ AS
 		END
 GO
 CREATE PROCEDURE spUpdateUserPassword
-	@userID int,
-	@oldPassword varchar(255),
-	@newPassword varchar(255)
+	@userID				int,
+	@oldPassword		varchar(255),
+	@newPassword		varchar(255)
 AS
 	SET NOCOUNT ON 
-	IF EXISTS(SELECT NULL FROM Users WHERE (userID = @userID) AND (PWDCOMPARE(@oldPassword, Users.password) = 1))
-	BEGIN
-		UPDATE Users
-		SET [password] = PWDENCRYPT(@newPassword)
-		WHERE userID = @userID
 
-	END ELSE BEGIN
- 		SELECT [error] = 'Password could not be updated'
-	END
+	IF EXISTS(SELECT NULL FROM Users WHERE (userID = @userID) AND (PWDCOMPARE(@oldPassword, Users.password) = 1))
+		BEGIN
+			UPDATE Users
+			SET [password] = PWDENCRYPT(@newPassword)
+			WHERE userID = @userID
+
+		END 
+	ELSE 
+		BEGIN
+ 			SELECT [error] = 'Password could not be updated'
+		END
 
 GO
 CREATE PROCEDURE spDeleteUser
@@ -87,21 +90,22 @@ AS
 	SET NOCOUNT ON
 
 	IF(@userID NOT IN (SELECT trainerID FROM PersonalTrainers))
-	BEGIN
-		UPDATE Users
-		SET deleted = 1
-		WHERE userID = @userID
-		SELECT [success] = 'User has been deleted'
-	END 
-	ELSE BEGIN
- 		SELECT [error] = 'User must be a trainer, so could not be deleted.'
-	END
+		BEGIN
+			UPDATE Users
+			SET deleted = 1
+			WHERE userID = @userID
+			SELECT [success] = 'User has been deleted'
+		END 
+	ELSE 
+		BEGIN
+ 			SELECT [error] = 'User must be a trainer, so could not be deleted.'
+		END
 GO
 CREATE PROCEDURE spAddWorkout
-	@userID int,
-	@templateID int,
-	@description varchar(MAX),
-	@date date
+	@userID				int,
+	@templateID			int,
+	@description		varchar(MAX),
+	@date				date
 AS
 	SET NOCOUNT ON
 	
@@ -121,11 +125,11 @@ AS
 
 GO 
 CREATE PROCEDURE spUpdateWorkout
-	@workoutID int, 
-	@userID int,
-	@template int,
-	@description varchar(255),
-	@date date
+	@workoutID			int, 
+	@userID				int,
+	@template			int,
+	@description		varchar(255),
+	@date				date
 AS
 	SET NOCOUNT ON
 	
@@ -147,7 +151,7 @@ AS
 
 GO
 CREATE PROCEDURE spDeleteWorkout
-	@workoutID int
+	@workoutID		int
 AS
 	SET NOCOUNT ON
 	
@@ -169,7 +173,7 @@ AS
 
 GO
 CREATE PROCEDURE spAddPersonalTrainer
-		@UserID		int
+	@UserID		int
 AS
 	SET NOCOUNT ON
 
@@ -186,8 +190,8 @@ AS
 
 GO
 CREATE PROCEDURE spDeletePersonalTrainer
-	@TrainerID	int,
-	@UserID		int
+	@TrainerID		int,
+	@UserID			int
 AS
 	SET NOCOUNT ON
 
@@ -225,31 +229,31 @@ AS
 
 GO
 CREATE PROCEDURE spUpdateTemplate
-	@TemplateID		INT,
-	@CreatorID		INT,
+	@TemplateID		int,
+	@CreatorID		int,
 	@Name			varchar(255),
 	@Description	varchar(255)
 
 AS
-SET NOCOUNT ON
+	SET NOCOUNT ON
 
-IF EXISTS(SELECT NULL FROM Templates WHERE	(templateID LIKE @TemplateID))
-	BEGIN
-		UPDATE Templates
-		SET creatorID = @CreatorID,
-			[name] = @Name,
-			[description] = @Description
-		WHERE templateID LIKE @TemplateID
-		SELECT * FROM Templates WHERE templateID = @TemplateID
-	END 
-ELSE 
-	BEGIN
-		SELECT [error] = 'Template could not be found'
-	END
+	IF EXISTS(SELECT NULL FROM Templates WHERE	(templateID LIKE @TemplateID))
+		BEGIN
+			UPDATE Templates
+			SET creatorID = @CreatorID,
+				[name] = @Name,
+				[description] = @Description
+			WHERE templateID LIKE @TemplateID
+			SELECT * FROM Templates WHERE templateID = @TemplateID
+		END 
+	ELSE 
+		BEGIN
+			SELECT [error] = 'Template could not be found'
+		END
 
 GO
 CREATE PROCEDURE spDeleteTemplate
-	@TemplateID	INT
+	@TemplateID 	int
 AS
 	SET NOCOUNT ON
 
@@ -267,8 +271,7 @@ AS
 
 GO
 CREATE PROCEDURE spGetWorkoutsForUser
-	@UserID		INT
-
+	@UserID		int
 AS
 	SET NOCOUNT ON
 
@@ -283,7 +286,8 @@ CREATE PROCEDURE spGetWorkoutsForUserInRange
 	@start		date,
 	@endd		date
 AS
-	SET NOCOUNT ON;
+	SET NOCOUNT ON
+
 	IF(@start > @endd) BEGIN
 		SELECT [error] = 'start date cant be after end date'
 	END ELSE BEGIN
@@ -295,9 +299,9 @@ AS
 
 GO
 CREATE PROCEDURE spGetActivitiesForWorkout
-		@workoutID	int
+	@workoutID	int
 AS
-	SET NOCOUNT ON;
+	SET NOCOUNT ON
 
 	SELECT *
 	FROM Activities
@@ -308,7 +312,7 @@ GO
 CREATE PROCEDURE spGetTypeByID
 	@typeID		int
 AS
-	SET NOCOUNT ON;
+	SET NOCOUNT ON
 
 	SELECT *
 	FROM [Types]
@@ -318,7 +322,7 @@ AS
 GO
 CREATE PROCEDURE spGetAllTypes
 AS
-	SET NOCOUNT ON;
+	SET NOCOUNT ON
 
 	SELECT *
 	FROM [Types]
@@ -328,7 +332,7 @@ GO
 CREATE PROCEDURE spGetTrainerForUser
 	@userID		int
 AS
-	SET NOCOUNT ON;
+	SET NOCOUNT ON
 	
 	SELECT *
 	FROM PersonalTrainers
@@ -339,22 +343,21 @@ GO
 CREATE PROCEDURE spGetTraineesForUser
 	@userID		int
 AS
-	SET NOCOUNT ON;
+	SET NOCOUNT ON
 	
 	IF 1 = (SELECT trainer FROM Users WHERE @userID = Users.userID)
-	BEGIN
-		SELECT *
-		FROM PersonalTrainers
-		WHERE PersonalTrainers.trainerID = @userID
-	END
+		BEGIN
+			SELECT *
+			FROM PersonalTrainers
+			WHERE PersonalTrainers.trainerID = @userID
+		END
 
 
 GO
 CREATE PROCEDURE spSearchUsers
-	@query	varchar(30)
+	@query		varchar(30)
 AS
-
-	SET NOCOUNT ON;
+	SET NOCOUNT ON
 
 	SELECT userID, name, email, birthday, height, [weight], trainer, deleted
 	FROM Users
@@ -363,9 +366,8 @@ AS
 
 GO
 CREATE PROCEDURE spGetActivityByID
-	@activityID int
-
-	AS
+	@activityID		int
+AS
 	SET NOCOUNT ON
 
 	SELECT *
@@ -374,9 +376,8 @@ CREATE PROCEDURE spGetActivityByID
 
 GO
 CREATE PROCEDURE spGetTemplateByID
-	@templateID int
-
-	AS
+	@templateID		int
+AS
 	SET NOCOUNT ON
 
 	SELECT *
@@ -385,9 +386,8 @@ CREATE PROCEDURE spGetTemplateByID
 
 GO
 CREATE PROCEDURE spGetTemplatesByUser
-	@creatorID int
-
-	AS
+	@creatorID  	int
+AS
 	SET NOCOUNT ON
 
 	SELECT *
@@ -397,9 +397,8 @@ CREATE PROCEDURE spGetTemplatesByUser
 
 GO
 CREATE PROCEDURE spGetUserByID
-	@userID int
-
-	AS
+	@userID		int
+AS
 	SET NOCOUNT ON
 
 	SELECT userID, name, email, birthday, height, [weight], trainer, deleted
@@ -409,8 +408,7 @@ CREATE PROCEDURE spGetUserByID
 
 GO
 CREATE PROCEDURE spGetWorkoutByID
-	@workoutID int
-
+	@workoutID		int
 AS
 	SET NOCOUNT ON
 
@@ -421,17 +419,18 @@ AS
 
 GO
 CREATE PROCEDURE spAddActivity       
-	@workoutID  INT,        
-	@templateID INT,        
-	@typeID     INT,        
-	@reps       INT,        
-	@sets       INT,        
-	@weight     FLOAT (53), 
-	@rest       INT,        
-	@distance   FLOAT (53), 
-	@timer       INT        
+	@workoutID		int,        
+	@templateID		int,        
+	@typeID			int,        
+	@reps			int,        
+	@sets			int,        
+	@weight			float(53), 
+	@rest			int,        
+	@distance		float(53), 
+	@timer			int        
 AS
 	SET NOCOUNT ON
+
 	BEGIN
 		INSERT INTO Activities(workoutID, templateID, typeID, reps, [sets], [weight], rest, distance, [time])
 		VALUES (@workoutID, @templateID ,@typeID ,@reps ,@sets ,@weight ,@rest ,@distance , @timer)   
@@ -439,57 +438,66 @@ AS
 	END
 GO
 CREATE PROCEDURE spAddType                  
-    @name    NVARCHAR (255),
-    @description NVARCHAR (255)              
+    @name			nvarchar(255),
+    @description	nvarchar(255)              
 AS
 	SET NOCOUNT ON
+
 	IF NOT EXISTS(SELECT NULL FROM [Types] WHERE name = @name)
-	BEGIN
-		INSERT INTO [Types](name, [description])
-		VALUES (@name, @description)  
-		SELECT [newId] = @@IDENTITY, [error] = ''
-	END	ELSE BEGIN
-		 SELECT [newId] = 0, [error] = 'This type name already exists'
-	END
+		BEGIN
+			INSERT INTO [Types](name, [description])
+			VALUES (@name, @description)  
+			SELECT [newId] = @@IDENTITY, [error] = ''
+		END	
+	ELSE 
+		BEGIN
+			 SELECT [newId] = 0, [error] = 'This type name already exists'
+		END
 
 GO
 CREATE PROCEDURE spUpdateType                  
-    @typeID INT,
-	@name    VARCHAR (255),
-    @description VARCHAR (255)              
+    @typeID			int,
+	@name			nvarchar(255),
+    @description	nvarchar(255)              
 AS
 	SET NOCOUNT ON
+	
 	IF EXISTS(SELECT NULL FROM Types WHERE name = @name)
-	BEGIN
-		SELECT [error] = 'This type name already exists'
-	END
+		BEGIN
+			SELECT [error] = 'This type name already exists'
+		END
 	ELSE
-	BEGIN
-		UPDATE [Types]
-		SET name = @name, [description] = @description
-		WHERE typeID = @typeID
-		SELECt * FROM [Types] WHERE typeID = @typeID
-	END
+		BEGIN
+			UPDATE [Types]
+			SET name = @name, [description] = @description
+			WHERE typeID = @typeID
+			SELECt * FROM [Types] WHERE typeID = @typeID
+		END
 GO
 CREATE PROCEDURE spUpdateActivity       
-	@activityID INT,
-	@workoutID  INT,        
-	@templateID INT,        
-	@typeID     INT,        
-	@reps       INT,        
-	@sets       INT,        
-	@weight     FLOAT (53), 
-	@rest       INT,        
-	@distance   FLOAT (53), 
-	@timer      INT        
+	@activityID		int,
+	@workoutID		int,        
+	@templateID		int,        
+	@typeID			int,        
+	@reps			int,        
+	@sets			int,        
+	@weight			float(53), 
+	@rest			int,        
+	@distance		float(53), 
+	@timer			int	        
 AS
 	SET NOCOUNT ON
 
-	IF (EXISTS(SELECT NULL From Workouts where workoutID = @workoutID) AND EXISTS (SELECT NULL FROM Templates where templateID = @templateID) AND EXISTS(SELECT NULL FROM Types where typeID = @typeID)) BEGIN
-		UPDATE Activities
-		SET workoutID = @workoutID, templateID = @templateID, typeID = @typeID, reps = @reps, [sets] = @sets, [weight] = @weight, rest = @rest, distance = @distance, [time] = @timer
-		WHERE activityID = @activityID
-		SELECT * FROM Activities WHERE activityID = @activityID 	
-	END ELSE BEGIN
-		SELECT [error] = 'invalid workoutID, templateID, or typeID'
-	END
+	IF (EXISTS(SELECT NULL From Workouts where workoutID = @workoutID) AND 
+	    EXISTS (SELECT NULL FROM Templates where templateID = @templateID) AND 
+	    EXISTS(SELECT NULL FROM Types where typeID = @typeID)) 
+		BEGIN
+			UPDATE Activities
+			SET workoutID = @workoutID, templateID = @templateID, typeID = @typeID, reps = @reps, [sets] = @sets, [weight] = @weight, rest = @rest, distance = @distance, [time] = @timer
+			WHERE activityID = @activityID
+			SELECT * FROM Activities WHERE activityID = @activityID 	
+		END 
+	ELSE 
+		BEGIN
+			SELECT [error] = 'invalid workoutID, templateID, or typeID'
+		END
