@@ -173,20 +173,25 @@ AS
 
 GO
 CREATE PROCEDURE spAddPersonalTrainer
-	@UserID		int
+	@UserID		int,
+	@TrainerID	int
 AS
 	SET NOCOUNT ON
 
-	IF EXISTS(SELECT NULL FROM PersonalTrainers WHERE userID LIKE @UserID)
+	IF EXISTS(SELECT NULL FROM PersonalTrainers WHERE userID LIKE @UserID) 
 		BEGIN
 			SELECT [error] = 'This user already has a trainer'
 		END 
 	ELSE
+	IF EXISTS(SELECT NULL FROM Users WHERE (userID LIKE @TrainerID) AND (trainer = 0))
 		BEGIN
-			INSERT INTO PersonalTrainers(userID)
-			VALUES(@UserID)
+			SELECT [error] = 'trainer inputted is not a trainer'
 		END
-
+		ELSE
+		BEGIN
+			INSERT INTO PersonalTrainers(trainerID, userID)
+			VALUES(@TrainerID, @UserID)
+		END
 
 GO
 CREATE PROCEDURE spDeletePersonalTrainer
