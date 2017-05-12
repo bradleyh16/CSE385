@@ -25,9 +25,8 @@ CREATE TABLE [dbo].[Users] (
 
 
 CREATE TABLE [dbo].[PersonalTrainers] (
-    [trainerID] INT IDENTITY (1, 1) NOT NULL,
-    [userID]    INT NULL,
-    PRIMARY KEY CLUSTERED ([trainerID] ASC),
+    [trainerID] INT NOT NULL,
+    [userID]    INT NOT NULL,
     FOREIGN KEY ([userID]) REFERENCES [dbo].[Users] ([userID])
 );
 
@@ -39,6 +38,7 @@ CREATE TABLE [dbo].[Templates] (
     PRIMARY KEY CLUSTERED ([templateID] ASC),
     FOREIGN KEY ([creatorID]) REFERENCES [dbo].[Users] ([userID])
 );
+
 CREATE TABLE [dbo].[Workouts] (
     [workoutID]   INT           IDENTITY (1, 1) NOT NULL,
     [userID]      INT           NULL,
@@ -46,8 +46,8 @@ CREATE TABLE [dbo].[Workouts] (
     [description] VARCHAR (255) NULL,
     [date]        DATE          NULL,
     PRIMARY KEY CLUSTERED ([workoutID] ASC),
-    FOREIGN KEY ([userID]) REFERENCES [dbo].[Users] ([userID]),
-    FOREIGN KEY ([templateID]) REFERENCES [dbo].[Templates] ([templateID])
+    FOREIGN KEY ([templateID]) REFERENCES [dbo].[Templates] ([templateID]),
+    FOREIGN KEY ([userID]) REFERENCES [dbo].[Users] ([userID])
 );
 
 
@@ -57,7 +57,6 @@ CREATE TABLE [dbo].[Types] (
     [description] VARCHAR (255) NULL,
     PRIMARY KEY CLUSTERED ([typeID] ASC)
 );
-
 
 
 CREATE TABLE [dbo].[Activities] (
@@ -72,11 +71,10 @@ CREATE TABLE [dbo].[Activities] (
     [distance]   FLOAT (53) NULL,
     [time]       INT        NULL,
     PRIMARY KEY CLUSTERED ([activityID] ASC),
-    FOREIGN KEY ([workoutID]) REFERENCES [dbo].[Workouts] ([workoutID]),
     FOREIGN KEY ([templateID]) REFERENCES [dbo].[Templates] ([templateID]),
-    FOREIGN KEY ([typeID]) REFERENCES [dbo].[Types] ([typeID])
+    FOREIGN KEY ([typeID]) REFERENCES [dbo].[Types] ([typeID]),
+    FOREIGN KEY ([workoutID]) REFERENCES [dbo].[Workouts] ([workoutID])
 );
-
 
 
 
